@@ -1,5 +1,6 @@
-package com.example.trackfit.ui.dashboard
+package com.example.trackfit.ui.screens.dashboard
 
+import android.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +60,7 @@ fun DashboardScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = android.R.drawable.ic_menu_camera), // Placeholder icon
+                        painter = painterResource(id = R.drawable.ic_menu_camera), // Placeholder icon
                         contentDescription = "User Profile",
                         modifier = Modifier.size(40.dp)
                     )
@@ -94,13 +100,17 @@ fun DashboardScreen(
 
             // Logout Button
             Text(
-                text = "Logout",
-                fontWeight = FontWeight.Medium,
-                color = Color.Red,
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .padding(top = 24.dp)
-
+                buildAnnotatedString {
+                    withLink(
+                        LinkAnnotation.Url(
+                            url = "",
+                            styles = TextLinkStyles(
+                                style = SpanStyle(color = Color.Red)
+                            ),
+                            linkInteractionListener = { navController.popBackStack(Routes.WELCOME, false) }
+                        )
+                    ) { append("Logout") }
+                }
             )
         }
 }

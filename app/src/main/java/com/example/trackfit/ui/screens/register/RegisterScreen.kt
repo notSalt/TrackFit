@@ -1,9 +1,5 @@
-package com.example.trackfit.ui.login
+package com.example.trackfit.ui.screens.register
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,12 +11,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +32,6 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withLink
@@ -50,9 +45,11 @@ import com.example.trackfit.ui.theme.TrackFitTheme
 import com.example.trackfit.utils.Routes
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavHostController
 ) {
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -72,7 +69,7 @@ fun LoginScreen(
             ),
         )
         Text(
-            text = "Welcome Back",
+            text = "Create an Account",
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -81,32 +78,36 @@ fun LoginScreen(
         )
 
         OutlinedTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            leadingIcon = { Icon(Icons.Rounded.Person, null) },
+            label = { Text(stringResource(R.string.first_name)) },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        )
+
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            leadingIcon = { Icon(Icons.Rounded.Person, null) },
+            label = { Text(stringResource(R.string.last_name)) },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        )
+
+        OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text(stringResource(R.string.email)) },
             leadingIcon = { Icon(Icons.Rounded.Email, null) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            label = { Text(stringResource(R.string.email)) },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(stringResource(R.string.password)) },
             leadingIcon = { Icon(Icons.Rounded.Lock, null) },
+            label = { Text(stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        Text(
-            text = "Forgot your password?",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontStyle = FontStyle.Italic,
-                color = Color.Gray
-            )
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -128,7 +129,7 @@ fun LoginScreen(
                 )
         ) {
             Text(
-                text = "Login",
+                text = "Register",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -138,7 +139,7 @@ fun LoginScreen(
 
         Text(
             buildAnnotatedString {
-                append("Don't have an account yet? ")
+                append("Already have an account? ")
                 withLink(
                     LinkAnnotation.Url(
                         url = "",
@@ -146,9 +147,9 @@ fun LoginScreen(
                             style = SpanStyle(color = Color.Blue),
                             hoveredStyle = SpanStyle(color = Color.Red)
                         ),
-                        linkInteractionListener = { navController.navigate(Routes.REGISTER) }
+                        linkInteractionListener = { navController.navigate(Routes.LOGIN) }
                     )
-                ) { append("Register") }
+               ) { append("Login") }
             }
         )
     }
@@ -156,9 +157,9 @@ fun LoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun RegisterScreenPreview() {
     TrackFitTheme {
-        LoginScreen(
+        RegisterScreen(
             navController = rememberNavController()
         )
     }

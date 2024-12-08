@@ -1,4 +1,4 @@
-package com.example.trackfit.ui.waterintake
+package com.example.trackfit.ui.screens.waterintake
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

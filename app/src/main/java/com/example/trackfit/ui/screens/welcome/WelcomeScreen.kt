@@ -1,4 +1,4 @@
-package com.example.trackfit.ui.welcome
+package com.example.trackfit.ui.screens.welcome
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

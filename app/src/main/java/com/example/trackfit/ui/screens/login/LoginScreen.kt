@@ -1,4 +1,4 @@
-package com.example.trackfit.ui.register
+package com.example.trackfit.ui.screens.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withLink
@@ -45,11 +45,9 @@ import com.example.trackfit.ui.theme.TrackFitTheme
 import com.example.trackfit.utils.Routes
 
 @Composable
-fun RegisterScreen(
+fun LoginScreen(
     navController: NavHostController
 ) {
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -69,7 +67,7 @@ fun RegisterScreen(
             ),
         )
         Text(
-            text = "Create an Account",
+            text = "Welcome Back",
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -78,36 +76,32 @@ fun RegisterScreen(
         )
 
         OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
-            leadingIcon = { Icon(Icons.Rounded.Person, null) },
-            label = { Text(stringResource(R.string.first_name)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            leadingIcon = { Icon(Icons.Rounded.Person, null) },
-            label = { Text(stringResource(R.string.last_name)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        )
-
-        OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            leadingIcon = { Icon(Icons.Rounded.Email, null) },
             label = { Text(stringResource(R.string.email)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            leadingIcon = { Icon(Icons.Rounded.Email, null) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            leadingIcon = { Icon(Icons.Rounded.Lock, null) },
             label = { Text(stringResource(R.string.password)) },
+            leadingIcon = { Icon(Icons.Rounded.Lock, null) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        Text(
+            text = "Forgot your password?",
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontStyle = FontStyle.Italic,
+                color = Color.Gray
+            )
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -129,7 +123,7 @@ fun RegisterScreen(
                 )
         ) {
             Text(
-                text = "Register",
+                text = "Login",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -139,7 +133,7 @@ fun RegisterScreen(
 
         Text(
             buildAnnotatedString {
-                append("Already have an account? ")
+                append("Don't have an account yet? ")
                 withLink(
                     LinkAnnotation.Url(
                         url = "",
@@ -147,9 +141,9 @@ fun RegisterScreen(
                             style = SpanStyle(color = Color.Blue),
                             hoveredStyle = SpanStyle(color = Color.Red)
                         ),
-                        linkInteractionListener = { navController.navigate(Routes.LOGIN) }
+                        linkInteractionListener = { navController.navigate(Routes.REGISTER) }
                     )
-               ) { append("Login") }
+                ) { append("Register") }
             }
         )
     }
@@ -157,9 +151,9 @@ fun RegisterScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
+fun LoginScreenPreview() {
     TrackFitTheme {
-        RegisterScreen(
+        LoginScreen(
             navController = rememberNavController()
         )
     }
