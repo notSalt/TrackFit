@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">TrackFit</string>
+    <string name="OnboardingTitle1">Track Your Goal</string>
+    <string name="OnboardingDescription1">Don\'t worry if you have trouble determining your goals, We can help you determine your goals and track your goals</string>
+    <string name="OnboardingTitle2">Get Burn</string>
+    <string name="OnboardingDescription2">Let’s keep burning, to achieve yours goals, it hurts only temporarily, if you give up now you will be in pain forever</string>
+    <string name="OnboardingTitle3">Eat Well</string>
+    <string name="OnboardingDescription3">Let\'s start a healthy lifestyle with us, we can determine your diet every day. healthy eating is fun</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="bmicalculator">BMI Calculator\n</string>
+    <string name="userAge">Age</string>
+    <string name="gender">Gender</string>
+    <string name="height">Height (cm)</string>
+    <string name="weight">Weight (kg)</string>
+    <string name="bmiResult">Result:</string>
+    <string name="addActivity">Add Activity\n</string>
+    <string name="activity">Activity</string>
+    <string name="duration">Duration (min)</string>
+    <string name="datetime"><![CDATA[Date & Time]]></string>
+    <string name="addMeal">Add Meal</string>
+    <string name="meal">Meal</string>
+    <string name="calorie">kcal</string>
+    <string name="waterIntake">Daily Water Tracker</string>
+</resources>
