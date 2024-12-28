@@ -16,26 +16,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WorkoutGuideScreen()
+            WorkoutGuideScreen(navController = rememberNavController())
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkoutGuideScreen() {
+fun WorkoutGuideScreen(
+    navController: NavHostController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Workout Guide") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -102,5 +106,7 @@ fun VideoItem(videoTitle: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewWorkoutGuideScreen() {
-    WorkoutGuideScreen()
+    WorkoutGuideScreen(
+        navController = rememberNavController()
+    )
 }

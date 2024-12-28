@@ -7,9 +7,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.trackfit.ui.screens.activitylog.ActivityLogScreen
+import com.example.trackfit.ui.screens.activitylog.AddActivityScreen
 import com.example.trackfit.ui.screens.bmicalculator.BmiCalculatorScreen
 import com.example.trackfit.ui.screens.dashboard.DashboardScreen
 import com.example.trackfit.ui.screens.login.LoginScreen
+import com.example.trackfit.ui.screens.nutrigo.AddMealScreen
 import com.example.trackfit.ui.screens.nutrigo.NutriGoScreen
 import com.example.trackfit.ui.screens.register.RegisterScreen
 import com.example.trackfit.ui.screens.stepcounter.StepCounterScreen
@@ -48,11 +50,11 @@ fun NavHost(
         }
 
         composable(Routes.WORKOUT_GUIDE) {
-            WorkoutGuideScreen()
+            WorkoutGuideScreen(navController)
         }
 
         composable(Routes.STEP_COUNTER) {
-            StepCounterScreen(5000, 10000)
+            StepCounterScreen(5000, 10000,navController)
         }
 
         composable(Routes.ACTIVITY_LOG) {
@@ -60,11 +62,17 @@ fun NavHost(
         }
 
         composable(Routes.WATER_INTAKE) {
-            WaterIntakeScreen()
+            WaterIntakeScreen(navController)
         }
 
         composable(Routes.NUTRI_GO) {
-            NutriGoScreen()
+            NutriGoScreen(navController)
+        }
+        composable(Routes.ADD_MEAL) {
+            AddMealScreen(navController)
+        }
+        composable(Routes.ADD_ACTIVITY) {
+            AddActivityScreen(navController)
         }
     }
 }

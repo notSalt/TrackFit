@@ -19,16 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StepCounterScreen(stepsToday: Int, goal: Int) {
+fun StepCounterScreen(stepsToday: Int, goal: Int, navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Step Counter") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -102,5 +104,5 @@ fun StepCounterScreen(stepsToday: Int, goal: Int) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewStepCounterScreen() {
-    StepCounterScreen(5000, 10000)
+    StepCounterScreen(5000, 10000, navController = rememberNavController())
 }

@@ -16,25 +16,28 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.utils.Routes
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NutriGoScreen()
+            NutriGoScreen(navController = rememberNavController())
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NutriGoScreen() {
+fun NutriGoScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Nutri-Go") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -109,7 +112,7 @@ fun NutriGoScreen() {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { /* Handle Add Meal */ },
+                    onClick = { navController.navigate(Routes.ADD_MEAL) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -151,5 +154,5 @@ fun NutriGoScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewNutriGoScreen() {
-    NutriGoScreen()
+    NutriGoScreen(navController = rememberNavController())
 }

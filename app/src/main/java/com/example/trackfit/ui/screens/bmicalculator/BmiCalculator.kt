@@ -61,7 +61,7 @@ fun BmiCalculatorScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "BMI Calculator") },
+                title = { Text(text = "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(

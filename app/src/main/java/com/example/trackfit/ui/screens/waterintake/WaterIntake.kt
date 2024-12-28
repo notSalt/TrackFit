@@ -1,5 +1,6 @@
 package com.example.trackfit.ui.screens.waterintake
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +17,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,123 +39,136 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
+import com.example.trackfit.ui.NavHost
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WaterIntakeScreen() {
+fun WaterIntakeScreen(navController: NavController) {
     var currentWaterIntake by remember { mutableStateOf("") }
     var goal by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Daily Water Intake") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 40.dp)
-                .verticalScroll(rememberScrollState())
-                .safeDrawingPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                .fillMaxSize()
+                .background(Color.White)
         ) {
-
-            Text(
-                text = stringResource(R.string.waterIntake),
-                style = MaterialTheme.typography.headlineMedium,
+            Column(
                 modifier = Modifier
-                    .padding(bottom = 50.dp, top = 40.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
-            )
+                    .statusBarsPadding()
+                    .padding(horizontal = 40.dp)
+                    .verticalScroll(rememberScrollState())
+                    .safeDrawingPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
 
-            Text(
-                text = "${currentWaterIntake}ml    /    ${goal}ml",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .padding(top = 40.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
-            )
-
-
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 200.dp),
-
-            ){
-
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Increase 250ml",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clickable {}
-                )
                 Text(
-                    text = "250ml",
-                    color = Color.Black,
-                    fontSize = 30.sp,
-                    modifier = Modifier.padding(start = 0.5.dp, top = 8.dp, end = 20.dp)
-                )
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Increase 500ml",
-                    tint = Color.Black,
+                    text = "${currentWaterIntake}ml    /    ${goal}ml",
+                    style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier
-                        .size(50.dp)
-                        .clickable {}
+                        .padding(top = 80.dp)
+                        .align(alignment = Alignment.CenterHorizontally),
                 )
-                Text(
-                    text = "500ml",
-                    color = Color.Black,
-                    fontSize = 30.sp,
-                    modifier = Modifier.padding(start = 0.5.dp, top = 8.dp)
-
-                )
-            }
 
 
-
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 5.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Button(
-                    onClick = {},
-                    shape = RoundedCornerShape(100),
-
-                    colors = ButtonDefaults.buttonColors(Color.Black),
+                Row(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                        .weight(2f)
-                ) {
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 200.dp),
+
+                    ) {
+
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Increase 250ml",
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable {}
+                    )
                     Text(
-                        text = "Set Goal",
-                        fontSize = 18.sp,
-                        color = Color.White
+                        text = "250ml",
+                        color = Color.Black,
+                        fontSize = 30.sp,
+                        modifier = Modifier.padding(start = 0.5.dp, top = 8.dp, end = 20.dp)
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Increase 500ml",
+                        tint = Color.Black,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable {}
+                    )
+                    Text(
+                        text = "500ml",
+                        color = Color.Black,
+                        fontSize = 30.sp,
+                        modifier = Modifier.padding(start = 0.5.dp, top = 8.dp)
+
                     )
                 }
-                Button(
-                    onClick = {},
-                    shape = RoundedCornerShape(100),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                        .weight(2f)
-                ) {
-                    Text(
-                        text = "Reset",
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
-                }
-            }
 
+
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 5.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(100),
+
+                        colors = ButtonDefaults.buttonColors(Color.Black),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 16.dp)
+                            .weight(2f)
+                    ) {
+                        Text(
+                            text = "Set Goal",
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                    }
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(100),
+                        colors = ButtonDefaults.buttonColors(Color.Black),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 16.dp)
+                            .weight(2f)
+                    ) {
+                        Text(
+                            text = "Reset",
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                    }
+                }
+
+            }
         }
     }
 }
@@ -160,6 +179,6 @@ fun WaterIntakeScreen() {
 @Composable
 fun WaterIntakePreview() {
 
-    WaterIntakeScreen()
+    WaterIntakeScreen(navController = rememberNavController())
 
 }

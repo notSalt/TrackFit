@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.utils.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +40,7 @@ fun ActivityLogScreen(
         },
         bottomBar = {
             Button(
-                onClick = { /* Handle Add Activity */ },
+                onClick = { navController.navigate(Routes.ADD_ACTIVITY) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),

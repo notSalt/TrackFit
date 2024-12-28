@@ -11,4 +11,6 @@ object Routes {
     const val ACTIVITY_LOG = "activity_log"
     const val WATER_INTAKE = "water_intake"
     const val NUTRI_GO = "nutri_go"
+    const val ADD_MEAL = "add_meal"
+    const val ADD_ACTIVITY = "add_activity"
 }
