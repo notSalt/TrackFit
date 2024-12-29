@@ -1,6 +1,7 @@
 package com.example.trackfit.ui
 
-import WorkoutGuideScreen
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -18,6 +19,7 @@ import com.example.trackfit.ui.screens.stepcounter.StepCounterScreen
 import com.example.trackfit.ui.screens.waterintake.WaterIntakeScreen
 import com.example.trackfit.ui.screens.welcome.WelcomeScreen
 import com.example.trackfit.utils.Routes
+import WorkoutGuideScreen
 
 @Composable
 fun NavHost(
@@ -50,7 +52,14 @@ fun NavHost(
         }
 
         composable(Routes.WORKOUT_GUIDE) {
-            WorkoutGuideScreen(navController)
+            WorkoutGuideScreen(
+                navController = navController,
+                onVideoClick = { videoUrl ->
+                    val context = navController.context
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl))
+                    context.startActivity(intent)
+                }
+            )
         }
 
         composable(Routes.STEP_COUNTER) {
@@ -68,9 +77,11 @@ fun NavHost(
         composable(Routes.NUTRI_GO) {
             NutriGoScreen(navController)
         }
+
         composable(Routes.ADD_MEAL) {
             AddMealScreen(navController)
         }
+
         composable(Routes.ADD_ACTIVITY) {
             AddActivityScreen(navController)
         }
