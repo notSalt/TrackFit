@@ -24,4 +24,5 @@
     <string name="meal">Meal</string>
     <string name="calorie">kcal</string>
     <string name="waterIntake">Daily Water Tracker</string>
+    <string name="editGoal">Input Goal</string>
 </resources>
