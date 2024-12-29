@@ -1,55 +1,45 @@
 package com.example.trackfit.ui.screens.login
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import android.content.Context
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.LoginStateManager
 import com.example.trackfit.R
+import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.ui.theme.TrackFitTheme
 import com.example.trackfit.utils.Routes
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    context: Context
 ) {
+    val loginStateManager = remember { LoginStateManager(context) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var loginFailed by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -96,18 +86,21 @@ fun LoginScreen(
                 .padding(8.dp)
         )
 
-        Text(
-            text = "Forgot your password?",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontStyle = FontStyle.Italic,
-                color = Color.Gray
-            )
-        )
-
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { navController.navigate(Routes.DASHBOARD) },
+            onClick = {
+                isLoading = true
+                viewModel.loginUser(email, password) { success, user ->
+                    isLoading = false
+                    if (success) {
+                        loginStateManager.logIn(user?.firstName + " " + user?.lastName)
+                        navController.navigate(Routes.DASHBOARD)
+                    } else {
+                        loginFailed = true
+                    }
+                }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color.White
@@ -131,20 +124,26 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        if (loginFailed) {
+            Text(
+                text = "Login Failed. Please check your credentials.",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(
-            buildAnnotatedString {
-                append("Don't have an account yet? ")
-                withLink(
-                    LinkAnnotation.Url(
-                        url = "",
-                        styles = TextLinkStyles(
-                            style = SpanStyle(color = Color.Blue),
-                            hoveredStyle = SpanStyle(color = Color.Red)
-                        ),
-                        linkInteractionListener = { navController.navigate(Routes.REGISTER) }
-                    )
-                ) { append("Register") }
-            }
+            text = "Don't have an account yet? Register",
+            color = Color.Blue,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier
+                .padding(8.dp)
+                .clickable {
+                    navController.navigate(Routes.REGISTER)
+                }
         )
     }
 }
@@ -154,7 +153,8 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     TrackFitTheme {
         LoginScreen(
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            context = LocalContext.current
         )
     }
 }

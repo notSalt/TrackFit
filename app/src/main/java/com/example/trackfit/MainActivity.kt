@@ -7,9 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import com.example.trackfit.ui.theme.TrackFitTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var loginStateManager: LoginStateManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             TrackFitTheme {
                 TrackFitApp()

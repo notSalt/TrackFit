@@ -38,20 +38,27 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
+import com.example.trackfit.ui.AppViewModelProvider
+import com.example.trackfit.ui.screens.login.LoginViewModel
 import com.example.trackfit.ui.theme.TrackFitTheme
 import com.example.trackfit.utils.Routes
 
 @Composable
 fun RegisterScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var registerFailed by remember { mutableStateOf(false) }
+    var reasonFailed by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -113,7 +120,17 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = { navController.navigate(Routes.DASHBOARD) },
+            onClick = {
+                isLoading = true
+                viewModel.registerUser(firstName, lastName, email, password) { success, reason ->
+                    isLoading = false
+                    if (success) {
+                        navController.navigate(Routes.LOGIN)
+                    } else {
+                        registerFailed = true
+                        reasonFailed = reason
+                    }
+                } },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color.White
@@ -132,6 +149,17 @@ fun RegisterScreen(
                 text = "Register",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        if (registerFailed) {
+            Text(
+                text = reasonFailed,
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp)
             )
         }
 

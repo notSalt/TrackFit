@@ -20,11 +20,14 @@ import com.example.trackfit.ui.screens.waterintake.WaterIntakeScreen
 import com.example.trackfit.ui.screens.welcome.WelcomeScreen
 import com.example.trackfit.utils.Routes
 import WorkoutGuideScreen
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun NavHost(
     navController: NavHostController
 ) {
+    val context = LocalContext.current
+
     NavHost(
         navController = navController,
         startDestination = Routes.WELCOME
@@ -36,7 +39,7 @@ fun NavHost(
         }
 
         composable(Routes.LOGIN) {
-            LoginScreen(navController)
+            LoginScreen(navController, context = context)
         }
 
         composable(Routes.REGISTER) {
@@ -44,7 +47,7 @@ fun NavHost(
         }
 
         composable(Routes.DASHBOARD) {
-            DashboardScreen(navController)
+            DashboardScreen(navController, context)
         }
 
         composable(Routes.BMI_CALCULATOR) {
