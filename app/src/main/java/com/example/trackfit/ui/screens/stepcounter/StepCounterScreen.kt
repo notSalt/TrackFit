@@ -12,6 +12,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,10 +27,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StepCounterScreen(stepsToday: Int, goal: Int, navController: NavController) {
+fun StepCounterScreen(navController: NavController) {
+    var stepsToday by remember { mutableStateOf(0) }
+    var goal by remember { mutableStateOf(0) }
+    var isRunning by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(isRunning,stepsToday) {
+        if(isRunning && goal>0 && stepsToday<=goal){
+            while(isRunning){
+                delay(1000L)
+                stepsToday+=1000
+                if (stepsToday >= goal) {
+                    stepsToday = goal
+                    break
+                }
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,7 +79,7 @@ fun StepCounterScreen(stepsToday: Int, goal: Int, navController: NavController) 
             Spacer(modifier = Modifier.height(16.dp))
 
             LinearProgressIndicator(
-                progress = stepsToday.toFloat() / goal.toFloat(),
+                progress = if(goal>0) stepsToday.toFloat()/goal.toFloat() else 0f,
                 color = Color.Red,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
@@ -64,37 +87,67 @@ fun StepCounterScreen(stepsToday: Int, goal: Int, navController: NavController) 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "${(stepsToday.toFloat() / goal.toFloat() * 100).toInt()}% completed",
+                text = if (goal > 0) "${(stepsToday.toFloat() / goal.toFloat() * 100).toInt()}% completed" else "No goal set",
                 fontSize = 18.sp
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "GOAL: $goal steps",
+                text = "GOAL: ${if (goal > 0) "$goal steps" else "Not set"}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Row {
-                Button(
-                    onClick = { /* Handle reset click */ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text("RESET")
+            Column {
+                Row {
+                    Button(
+                        onClick = {
+                            stepsToday=0
+                            goal=0
+                            isRunning=false
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text("RESET")
+                    }
+
+                    Button(
+                        onClick = {
+                            goal=10000
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text("SET GOAL")
+                    }
                 }
 
-                Button(
-                    onClick = { /* Handle set goal click */ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text("SET GOAL")
+                Row {
+                    Button(
+                        onClick = { isRunning=true },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text("START")
+                    }
+
+                    Button(
+                        onClick = {
+                            isRunning=false
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text("STOP")
+                    }
                 }
             }
         }
@@ -104,5 +157,5 @@ fun StepCounterScreen(stepsToday: Int, goal: Int, navController: NavController) 
 @Preview(showBackground = true)
 @Composable
 fun PreviewStepCounterScreen() {
-    StepCounterScreen(5000, 10000, navController = rememberNavController())
+    StepCounterScreen(navController = rememberNavController())
 }

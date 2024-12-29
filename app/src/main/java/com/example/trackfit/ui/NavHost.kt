@@ -54,7 +54,7 @@ fun NavHost(
         }
 
         composable(Routes.STEP_COUNTER) {
-            StepCounterScreen(5000, 10000,navController)
+            StepCounterScreen(navController)
         }
 
         composable(Routes.ACTIVITY_LOG) {

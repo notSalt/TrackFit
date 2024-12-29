@@ -1,6 +1,7 @@
 package com.example.trackfit.ui.screens.activitylog
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
+import com.example.trackfit.utils.Routes
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -99,7 +101,7 @@ fun AddActivityScreen(navController: NavController){
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     )
                 )
@@ -126,7 +128,7 @@ fun AddActivityScreen(navController: NavController){
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     )
                 )
@@ -138,7 +140,8 @@ fun AddActivityScreen(navController: NavController){
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                        },
                         shape = RoundedCornerShape(100),
 
                         colors = ButtonDefaults.buttonColors(Color.Black),
@@ -153,7 +156,7 @@ fun AddActivityScreen(navController: NavController){
                         )
                     }
                     Button(
-                        onClick = {},
+                        onClick = { navController.navigate(Routes.ACTIVITY_LOG)},
                         shape = RoundedCornerShape(100),
                         colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier
