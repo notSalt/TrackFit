@@ -1,8 +1,5 @@
 package com.example.trackfit.ui.screens.nutrigo
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -23,8 +20,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.utils.Routes
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +36,7 @@ fun NutriGoScreen(
                 title = { Text(text = "Nutri-Go") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
+                        @Suppress("DEPRECATION")
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -62,6 +58,7 @@ fun NutriGoScreen(
                 modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                @Suppress("DEPRECATION")
                 LinearProgressIndicator(
                     progress = totalCalories / 2000f,
                     modifier = Modifier
