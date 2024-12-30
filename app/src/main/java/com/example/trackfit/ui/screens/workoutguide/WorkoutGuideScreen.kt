@@ -1,30 +1,48 @@
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.trackfit.R
+import coil.compose.rememberImagePainter
+import androidx.compose.foundation.lazy.LazyColumn
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WorkoutGuideScreen(navController = rememberNavController())
+            WorkoutGuideScreen(
+                navController = rememberNavController(),
+                onVideoClick = { videoUrl ->
+                    openYouTubeVideo(videoUrl)
+                }
+            )
+        }
+    }
+
+    private fun openYouTubeVideo(videoUrl: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl))
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
@@ -32,7 +50,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkoutGuideScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    onVideoClick: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -49,45 +68,55 @@ fun WorkoutGuideScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            // Video List
-            VideoItem("video 1")
-            VideoItem("video 2")
-            VideoItem("video 3")
-            VideoItem("video 4")
+            item {
+                VideoItem("FULL BODY YOGA Workout", "https://youtu.be/Eml2xnoLpYE", onVideoClick)
+            }
+            item {
+                VideoItem("ABS Workout", "https://youtu.be/iD8F3D1JeZk", onVideoClick)
+            }
+            item {
+                VideoItem("UPPER BODY & CARDIO Workout", "https://youtu.be/8Xlv99EGEEQ", onVideoClick)
+            }
+            item {
+                VideoItem("LEG Workout", "https://youtu.be/e_CcHiwhGvY", onVideoClick)
+            }
         }
     }
 }
 
 @Composable
-fun VideoItem(videoTitle: String) {
-    Row(
+fun VideoItem(videoTitle: String, videoUrl: String, onVideoClick: (String) -> Unit) {
+    val videoId = videoUrl.substringAfterLast("v=", videoUrl.substringAfterLast("/"))
+    val thumbnailUrl = "https://img.youtube.com/vi/$videoId/hqdefault.jpg"
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 8.dp)
+            .clickable { onVideoClick(videoUrl) },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // YouTube Logo
         Image(
-            painter = painterResource(id = R.drawable.youtube_logo), // Replace with your YouTube logo drawable
-            contentDescription = "YouTube Logo",
+            painter = rememberImagePainter(thumbnailUrl),
+            contentDescription = "Thumbnail for $videoTitle",
             modifier = Modifier
-                .size(100.dp)
-                .padding(end = 16.dp)
+                .size(200.dp)
+                .padding(bottom = 8.dp),
+            contentScale = ContentScale.Crop
         )
 
-        // Video Title Box
         Surface(
             shape = RoundedCornerShape(8.dp),
             color = Color.LightGray,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -107,6 +136,7 @@ fun VideoItem(videoTitle: String) {
 @Composable
 fun PreviewWorkoutGuideScreen() {
     WorkoutGuideScreen(
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        onVideoClick = {}
     )
 }

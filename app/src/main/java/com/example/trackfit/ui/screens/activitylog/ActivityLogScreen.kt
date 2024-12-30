@@ -1,11 +1,7 @@
 package com.example.trackfit.ui.screens.activitylog
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,15 +11,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.utils.Routes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.lazy.items
+import com.example.trackfit.data.activity.Activity
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityLogScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: ActivityLogViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val activityLogUiState by viewModel.activityLogUiState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,7 +70,7 @@ fun ActivityLogScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
-            items(sampleActivities) { activity ->
+            items(items = activityLogUiState.activityList, key = { it.id }) { activity ->
                 ActivityCard(activity = activity)
             }
         }
@@ -89,7 +98,7 @@ fun ActivityCard(activity: Activity) {
                 color = Color.Gray
             )
             Text(
-                text = activity.date,
+                text = convertLongToTime(activity.date),
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
@@ -97,16 +106,11 @@ fun ActivityCard(activity: Activity) {
     }
 }
 
-data class Activity(
-    val name: String,
-    val duration: Int,
-    val date: String
-)
-
-val sampleActivities = listOf(
-    Activity("Running", 30, "Dec 4, 2024, 6:00pm"),
-    Activity("Walking", 20, "Dec 5, 2024, 6:00pm")
-)
+fun convertLongToTime(time: Long): String {
+    val date = Date(time)
+    val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
+    return format.format(date)
+}
 
 @Preview(showBackground = true)
 @Composable

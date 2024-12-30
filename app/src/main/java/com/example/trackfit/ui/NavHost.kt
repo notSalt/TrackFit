@@ -1,6 +1,7 @@
 package com.example.trackfit.ui
 
-import WorkoutGuideScreen
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -18,11 +19,15 @@ import com.example.trackfit.ui.screens.stepcounter.StepCounterScreen
 import com.example.trackfit.ui.screens.waterintake.WaterIntakeScreen
 import com.example.trackfit.ui.screens.welcome.WelcomeScreen
 import com.example.trackfit.utils.Routes
+import WorkoutGuideScreen
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun NavHost(
     navController: NavHostController
 ) {
+    val context = LocalContext.current
+
     NavHost(
         navController = navController,
         startDestination = Routes.WELCOME
@@ -34,7 +39,7 @@ fun NavHost(
         }
 
         composable(Routes.LOGIN) {
-            LoginScreen(navController)
+            LoginScreen(navController, context = context)
         }
 
         composable(Routes.REGISTER) {
@@ -42,7 +47,7 @@ fun NavHost(
         }
 
         composable(Routes.DASHBOARD) {
-            DashboardScreen(navController)
+            DashboardScreen(navController, context)
         }
 
         composable(Routes.BMI_CALCULATOR) {
@@ -50,7 +55,14 @@ fun NavHost(
         }
 
         composable(Routes.WORKOUT_GUIDE) {
-            WorkoutGuideScreen(navController)
+            WorkoutGuideScreen(
+                navController = navController,
+                onVideoClick = { videoUrl ->
+                    val context = navController.context
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl))
+                    context.startActivity(intent)
+                }
+            )
         }
 
         composable(Routes.STEP_COUNTER) {
@@ -68,9 +80,11 @@ fun NavHost(
         composable(Routes.NUTRI_GO) {
             NutriGoScreen(navController)
         }
+
         composable(Routes.ADD_MEAL) {
             AddMealScreen(navController)
         }
+
         composable(Routes.ADD_ACTIVITY) {
             AddActivityScreen(navController)
         }
