@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,26 +54,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
+import com.example.trackfit.ui.AppViewModelProvider
+import com.example.trackfit.ui.screens.activitylog.AddActivityViewModel
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMealScreen(navController: NavController){
-    var meal by remember { mutableStateOf("") }
-    var calorieCount by remember { mutableStateOf("") }
-    var mExpanded by remember { mutableStateOf(false) }
+fun AddMealScreen(
+    navController: NavController,
+    viewModel: AddMealViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val mealUiState = viewModel.mealUiState
 
-    val category = listOf("Breakfast", "Lunch", "Dinner")
-    var mSelectedText by remember { mutableStateOf("") }
-    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
+    var mExpanded by remember { mutableStateOf(false) }
+    var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon = if (mExpanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -111,19 +118,23 @@ fun AddMealScreen(navController: NavController){
                         .align(alignment = Alignment.CenterHorizontally),
                 )
 
+                // Dropdown for Category
                 OutlinedTextField(
-                    value = mSelectedText,
-                    onValueChange = { mSelectedText = it },
+                    value = mealUiState.mealDetails.category,
+                    onValueChange = {
+                        viewModel.updateUiState(
+                            mealUiState.mealDetails.copy(category = it)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates ->
-                            // This value is used to assign to
-                            // the DropDown the same width
                             mTextFieldSize = coordinates.size.toSize()
                         },
                     label = { Text("Category") },
                     trailingIcon = {
-                        Icon(icon, "contentDescription",
+                        Icon(
+                            icon, "contentDescription",
                             Modifier.clickable { mExpanded = !mExpanded })
                     }
                 )
@@ -133,36 +144,48 @@ fun AddMealScreen(navController: NavController){
                     modifier = Modifier
                         .width(with(LocalDensity.current) { mTextFieldSize.width.toDp() })
                 ) {
-                    category.forEach { label ->
+                    listOf("Breakfast", "Lunch", "Dinner").forEach { label ->
                         DropdownMenuItem(
                             text = { Text(text = label) },
                             onClick = {
-                                mSelectedText = label
+                                viewModel.updateUiState(
+                                    mealUiState.mealDetails.copy(category = label)
+                                )
                                 mExpanded = false
                             }
                         )
                     }
                 }
 
-
+                // Input for Meal Name
                 EditMealField(
                     label = R.string.meal,
-                    value = meal,
-                    onValueChanged = { meal = it },
+                    value = mealUiState.mealDetails.name,
+                    onValueChanged = {
+                        viewModel.updateUiState(
+                            mealUiState.mealDetails.copy(name = it)
+                        )
+                    },
                     modifier = Modifier
                         .padding(bottom = 32.dp, top = 25.dp)
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     )
                 )
 
+                // Input for Calorie Count
                 EditCalorieField(
                     label = R.string.calorie,
-                    value = calorieCount,
-                    onValueChanged = { calorieCount = it },
+                    value = mealUiState.mealDetails.calories.toString(),
+                    onValueChanged = {
+                        val calories = it.toIntOrNull() ?: 0
+                        viewModel.updateUiState(
+                            mealUiState.mealDetails.copy(calories = calories)
+                        )
+                    },
                     modifier = Modifier
                         .padding(bottom = 32.dp)
                         .fillMaxWidth()
@@ -173,6 +196,7 @@ fun AddMealScreen(navController: NavController){
                     )
                 )
 
+                // Action Buttons
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -180,9 +204,13 @@ fun AddMealScreen(navController: NavController){
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
-                        onClick = {},
+                        onClick = {
+                            coroutineScope.launch {
+                                viewModel.saveMeal()
+                                navController.navigateUp() // Navigate back after saving
+                            }
+                        },
                         shape = RoundedCornerShape(100),
-
                         colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 16.dp)
@@ -195,7 +223,7 @@ fun AddMealScreen(navController: NavController){
                         )
                     }
                     Button(
-                        onClick = {},
+                        onClick = { navController.navigateUp() },
                         shape = RoundedCornerShape(100),
                         colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier
@@ -209,12 +237,11 @@ fun AddMealScreen(navController: NavController){
                         )
                     }
                 }
-
-
             }
         }
     }
 }
+
 
 @Composable
 fun EditMealField(

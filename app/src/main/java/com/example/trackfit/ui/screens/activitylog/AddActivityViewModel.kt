@@ -27,8 +27,6 @@ class AddActivityViewModel(private val activitiesRepository: ActivityRepository)
             name.isNotBlank() && duration.isNotBlank() && date != 0L
         }
     }
-
-
 }
 
 data class ActivityUiState(

@@ -15,8 +15,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -136,14 +141,19 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = "Don't have an account yet? Register",
-            color = Color.Blue,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier
-                .padding(8.dp)
-                .clickable {
-                    navController.navigate(Routes.REGISTER)
-                }
+            buildAnnotatedString {
+                append("Don't have an account yet? ")
+                withLink(
+                    LinkAnnotation.Url(
+                        url = "",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(color = Color.Blue),
+                            hoveredStyle = SpanStyle(color = Color.Red)
+                        ),
+                        linkInteractionListener = { navController.navigate(Routes.REGISTER) }
+                    )
+                ) { append("Register") }
+            }
         )
     }
 }

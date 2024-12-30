@@ -18,10 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.utils.Routes
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.foundation.lazy.items
 import com.example.trackfit.data.activity.Activity
-import java.text.SimpleDateFormat
+import java.text.DateFormat.getDateTimeInstance
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +30,6 @@ fun ActivityLogScreen(
     viewModel: ActivityLogViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val activityLogUiState by viewModel.activityLogUiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -39,6 +37,7 @@ fun ActivityLogScreen(
                 title = { Text(text = "Activity Log") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
+                        @Suppress("DEPRECATION")
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -93,7 +92,7 @@ fun ActivityCard(activity: Activity) {
                 color = Color.Black
             )
             Text(
-                text = "${activity.duration} mins",
+                text = "${activity.duration} minutes",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.Gray
             )
@@ -108,7 +107,7 @@ fun ActivityCard(activity: Activity) {
 
 fun convertLongToTime(time: Long): String {
     val date = Date(time)
-    val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
+    val format = getDateTimeInstance()
     return format.format(date)
 }
 
