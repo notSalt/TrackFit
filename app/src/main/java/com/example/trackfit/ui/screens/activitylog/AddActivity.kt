@@ -3,7 +3,6 @@ package com.example.trackfit.ui.screens.activitylog
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,11 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,7 +47,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
 import com.example.trackfit.ui.AppViewModelProvider
-import com.example.trackfit.ui.screens.activitylog.ActivityInputForm
 import com.example.trackfit.utils.Routes
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -72,6 +66,7 @@ fun AddActivityScreen(
                 title = { Text(text = "") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
+                        @Suppress("DEPRECATION")
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -106,8 +101,7 @@ fun AddActivityBody(
     navController: NavController,
     activityUiState: ActivityUiState,
     onActivityValueChange: (ActivityDetails) -> Unit,
-    onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onSaveClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
