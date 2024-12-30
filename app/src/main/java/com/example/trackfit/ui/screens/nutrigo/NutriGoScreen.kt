@@ -7,31 +7,34 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.utils.Routes
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            NutriGoScreen(navController = rememberNavController())
-        }
-    }
-}
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NutriGoScreen(navController: NavController) {
+fun NutriGoScreen(
+    navController: NavController,
+    viewModel: NutriGoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val mealLog by viewModel.mealLog.collectAsState()
+    val totalCalories by viewModel.totalCalories.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,16 +63,16 @@ fun NutriGoScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LinearProgressIndicator(
-                    progress = 0.75f, // 1500 / 2000
+                    progress = totalCalories / 2000f,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(10.dp),
-                    color = Color(0xFFD32F2F), // Red
-                    trackColor = Color(0xFFE0E0E0) // Light gray
+                    color = Color(0xFFD32F2F),
+                    trackColor = Color(0xFFE0E0E0)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "1500 kcal / 2000 kcal",
+                    text = "$totalCalories kcal / 2000 kcal",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -87,19 +90,23 @@ fun NutriGoScreen(navController: NavController) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Card(
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(4.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                mealLog.forEach { meal ->
+                    Card(
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
                     ) {
-                        Text(text = "Breakfast", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                        Text(text = "Bread Toast", fontSize = 14.sp, color = Color.Gray)
-                        Text(text = "50 kcal", fontSize = 14.sp, color = Color.Gray)
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(text = meal.category, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text(text = meal.name, fontSize = 14.sp, color = Color.Gray)
+                            Text(text = "${meal.calories} kcal", fontSize = 14.sp, color = Color.Gray)
+                        }
                     }
                 }
             }
@@ -116,40 +123,17 @@ fun NutriGoScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF00123C), // Dark blue
+                        containerColor = Color(0xFF00123C),
                         contentColor = Color.White
                     )
                 ) {
                     Text(text = "Add Meal")
                 }
-
-                Button(
-                    onClick = { /* Handle Set Calorie Goal */ },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF00123C),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(text = "Set Calorie Goal")
-                }
-
-                Button(
-                    onClick = { /* Handle Reset */ },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF00123C),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text(text = "Reset")
-                }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

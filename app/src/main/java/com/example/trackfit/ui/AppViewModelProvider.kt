@@ -9,6 +9,8 @@ import com.example.trackfit.ui.screens.activitylog.ActivityLogViewModel
 import com.example.trackfit.TrackFitApplication
 import com.example.trackfit.ui.screens.activitylog.AddActivityViewModel
 import com.example.trackfit.ui.screens.login.LoginViewModel
+import com.example.trackfit.ui.screens.nutrigo.AddMealViewModel
+import com.example.trackfit.ui.screens.nutrigo.NutriGoViewModel
 import com.example.trackfit.ui.screens.register.RegisterViewModel
 
 object AppViewModelProvider {
@@ -34,6 +36,18 @@ object AppViewModelProvider {
         initializer {
             AddActivityViewModel(
                 trackFitApplication().container.activityRepository
+            )
+        }
+
+        initializer {
+            NutriGoViewModel(
+                trackFitApplication().container.mealRepository
+            )
+        }
+
+        initializer {
+            AddMealViewModel(
+                trackFitApplication().container.mealRepository
             )
         }
     }

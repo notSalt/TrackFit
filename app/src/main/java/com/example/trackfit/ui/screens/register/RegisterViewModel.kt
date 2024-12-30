@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.trackfit.data.user.User
 import com.example.trackfit.data.user.UserRepository
+import com.example.trackfit.ui.screens.activitylog.ActivityDetails
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,11 @@ class RegisterViewModel(private val userRepository: UserRepository) : ViewModel(
             if (user != null) {
                 onRegisterResult(false, "Email has already been taken.")
             } else {
+                if (firstName.isBlank() || lastName.isBlank() || email.isBlank() || password.isBlank()) {
+                    onRegisterResult(false, "Please fill in all fields.")
+                    return@launch
+                }
+
                 val newUser = User(
                     firstName = firstName,
                     lastName = lastName,
