@@ -25,15 +25,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -59,6 +62,9 @@ fun AddActivityScreen(
     viewModel: AddActivityViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Scaffold(
         topBar = {
@@ -72,14 +78,18 @@ fun AddActivityScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black,
+                ),
             )
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(gradient)
         ) {
             AddActivityBody(
                 navController = navController,
@@ -183,8 +193,7 @@ fun ActivityInputForm(
         onValueChanged = { onValueChange(activityDetails.copy(name = it)) },
         modifier = Modifier
             .padding(bottom = 32.dp)
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium),
+            .fillMaxWidth(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
@@ -196,8 +205,7 @@ fun ActivityInputForm(
         onValueChanged = { onValueChange(activityDetails.copy(duration = it)) },
         modifier = Modifier
             .padding(bottom = 32.dp)
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium),
+            .fillMaxWidth(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
@@ -215,7 +223,7 @@ fun EditActivityField(
     modifier: Modifier,
 ) {
 
-    TextField(
+    OutlinedTextField(
         value = value,
         singleLine = true,
         modifier = modifier,
@@ -234,7 +242,7 @@ fun EditDurationField(
     modifier: Modifier,
 ) {
 
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,

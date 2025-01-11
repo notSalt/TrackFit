@@ -1,5 +1,6 @@
 package com.example.trackfit.ui.screens.activitylog
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -19,6 +20,7 @@ import com.example.trackfit.ui.AppViewModelProvider
 import com.example.trackfit.utils.Routes
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.graphics.Brush
 import com.example.trackfit.data.activity.Activity
 import java.text.DateFormat.getDateTimeInstance
 import java.util.Date
@@ -30,6 +32,9 @@ fun ActivityLogScreen(
     viewModel: ActivityLogViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val activityLogUiState by viewModel.activityLogUiState.collectAsState()
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Scaffold(
         topBar = {
@@ -43,7 +48,11 @@ fun ActivityLogScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black,
+                )
             )
         },
         bottomBar = {
@@ -62,17 +71,24 @@ fun ActivityLogScreen(
             }
         }
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(items = activityLogUiState.activityList, key = { it.id }) { activity ->
-                ActivityCard(activity = activity)
+                .background(gradient)
+        ){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                items(items = activityLogUiState.activityList, key = { it.id }) { activity ->
+                    ActivityCard(activity = activity)
+                }
             }
         }
+        
     }
 }
 

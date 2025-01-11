@@ -1,7 +1,10 @@
 package com.example.trackfit.ui.screens.nutrigo
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,11 +17,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.trackfit.R
 import com.example.trackfit.ui.AppViewModelProvider
+import com.example.trackfit.ui.screens.stepcounter.EditGoalField
 import com.example.trackfit.utils.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +42,11 @@ fun NutriGoScreen(
 ) {
     val mealLog by viewModel.mealLog.collectAsState()
     val totalCalories by viewModel.totalCalories.collectAsState()
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
+
+
 
     Scaffold(
         topBar = {
@@ -42,14 +60,21 @@ fun NutriGoScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF5FB1B7),
+                    titleContentColor = Color.Black,
+                )
+
             )
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .background(gradient),
+
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -73,6 +98,8 @@ fun NutriGoScreen(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
+
+
             }
 
             // Meal Log Section
@@ -130,6 +157,7 @@ fun NutriGoScreen(
         }
     }
 }
+
 
 
 @Preview(showBackground = true)

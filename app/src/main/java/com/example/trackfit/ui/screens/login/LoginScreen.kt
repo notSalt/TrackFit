@@ -1,6 +1,7 @@
 package com.example.trackfit.ui.screens.login
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,11 +47,16 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var loginFailed by remember { mutableStateOf(false) }
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(gradient)
             .padding(16.dp),
+
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

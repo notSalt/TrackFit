@@ -2,6 +2,7 @@ package com.example.trackfit.ui.screens.stepcounter
 
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -12,10 +13,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,6 +54,9 @@ fun StepCounterScreen(navController: NavController) {
     var goalInput by remember { mutableStateOf(" ") }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
     LaunchedEffect(isRunning,stepsToday) {
         if(isRunning && goal>0 && stepsToday<=goal){
             while(isRunning){
@@ -74,7 +81,11 @@ fun StepCounterScreen(navController: NavController) {
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF5FB1B7),
+                    titleContentColor = Color.Black,
+                ),
             )
         }
     ) { paddingValues ->
@@ -84,6 +95,7 @@ fun StepCounterScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(gradient)
         ) {
             Text(
                 text = "Steps Today: $stepsToday",
@@ -199,7 +211,7 @@ fun EditGoalField(
     modifier: Modifier,
 ){
 
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,

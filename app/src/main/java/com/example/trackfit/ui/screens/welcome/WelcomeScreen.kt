@@ -1,5 +1,6 @@
 package com.example.trackfit.ui.screens.welcome
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,14 @@ fun WelcomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    Box() {
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradient)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -51,7 +59,7 @@ fun WelcomeScreen(
                 style = MaterialTheme.typography.bodyLarge.copy(
                     brush = Brush.linearGradient(
                         listOf(
-                            colorResource(R.color.logo2), colorResource(R.color.logo1)
+                            Color(0xFF2F4F4F),Color(0xFF4653B9)
                         )
                     )
                 ),
@@ -61,7 +69,7 @@ fun WelcomeScreen(
                 text = "Everybody can train",
                 fontSize = 25.sp,
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    color = colorResource(R.color.logomoto)
+                    color = colorResource(R.color.black)
                 ),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )

@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -89,6 +91,9 @@ fun BmiCalculatorScreen(
     var weight by remember { mutableStateOf("") }
     val kgs = weight.toDoubleOrNull() ?: 0.0
     var bmiResult by remember { mutableStateOf("") }
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Scaffold(
         topBar = {
@@ -98,10 +103,17 @@ fun BmiCalculatorScreen(
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            tint = Color.Black
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF5FB1B7),
+
+                )
+
+
             )
         }
     ) { paddingValues ->
@@ -109,7 +121,7 @@ fun BmiCalculatorScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.White)
+                .background(gradient)
         ) {
             Column(
                 modifier = Modifier
@@ -202,8 +214,8 @@ fun BmiCalculatorScreen(
                     onValueChanged = { height = it },
                     modifier = Modifier
                         .padding(bottom = 8.dp, top = 8.dp)
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium),
+                        .fillMaxWidth(),
+
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -216,8 +228,7 @@ fun BmiCalculatorScreen(
                     onValueChanged = { weight = it },
                     modifier = Modifier
                         .padding(bottom = 32.dp, top = 8.dp)
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium),
+                        .fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -299,7 +310,7 @@ fun EditHeightField(
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
 ){
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,
@@ -319,7 +330,7 @@ fun EditWeightField(
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
 ){
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,

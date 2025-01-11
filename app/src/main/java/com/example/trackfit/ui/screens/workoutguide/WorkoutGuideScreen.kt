@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.graphics.Brush
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +34,9 @@ class MainActivity : ComponentActivity() {
                 navController = rememberNavController(),
                 onVideoClick = { videoUrl ->
                     openYouTubeVideo(videoUrl)
-                }
+                },
+
+
             )
         }
     }
@@ -52,7 +56,11 @@ class MainActivity : ComponentActivity() {
 fun WorkoutGuideScreen(
     navController: NavHostController,
     onVideoClick: (String) -> Unit
+
 ) {
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,31 +72,44 @@ fun WorkoutGuideScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black,
+                ),
             )
-        }
+        },
+
     ) { paddingValues ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            item {
-                VideoItem("FULL BODY YOGA Workout", "https://youtu.be/Eml2xnoLpYE", onVideoClick)
-            }
-            item {
-                VideoItem("ABS Workout", "https://youtu.be/iD8F3D1JeZk", onVideoClick)
-            }
-            item {
-                VideoItem("UPPER BODY & CARDIO Workout", "https://youtu.be/8Xlv99EGEEQ", onVideoClick)
-            }
-            item {
-                VideoItem("LEG Workout", "https://youtu.be/e_CcHiwhGvY", onVideoClick)
+                .background(gradient)
+        ){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .background(gradient),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                item {
+                    VideoItem("FULL BODY YOGA Workout", "https://youtu.be/Eml2xnoLpYE", onVideoClick)
+                }
+                item {
+                    VideoItem("ABS Workout", "https://youtu.be/iD8F3D1JeZk", onVideoClick)
+                }
+                item {
+                    VideoItem("UPPER BODY & CARDIO Workout", "https://youtu.be/8Xlv99EGEEQ", onVideoClick)
+                }
+                item {
+                    VideoItem("LEG Workout", "https://youtu.be/e_CcHiwhGvY", onVideoClick)
+                }
             }
         }
+
     }
 }
 
@@ -97,11 +118,13 @@ fun VideoItem(videoTitle: String, videoUrl: String, onVideoClick: (String) -> Un
     val videoId = videoUrl.substringAfterLast("v=", videoUrl.substringAfterLast("/"))
     val thumbnailUrl = "https://img.youtube.com/vi/$videoId/hqdefault.jpg"
 
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onVideoClick(videoUrl) },
+
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -137,6 +160,7 @@ fun VideoItem(videoTitle: String, videoUrl: String, onVideoClick: (String) -> Un
 fun PreviewWorkoutGuideScreen() {
     WorkoutGuideScreen(
         navController = rememberNavController(),
-        onVideoClick = {}
+        onVideoClick = {},
+
     )
 }

@@ -13,4 +13,10 @@ object Routes {
     const val NUTRI_GO = "nutri_go"
     const val ADD_MEAL = "add_meal"
     const val ADD_ACTIVITY = "add_activity"
+    const val BMI_WELCOME = "bmi_welcome"
+    const val STEP_COUNTER_WELCOME = "step_counter_welcome"
+    const val WATER_INTAKE_WELCOME = "water_intake_welcome"
+    const val WORKOUT_WELCOME = "workout_welcome"
+    const val ACTIVITY_WELCOME = "activity_welcome"
+    const val NUTRI_GO_WELCOME = "nutri_go_welcome"
 }

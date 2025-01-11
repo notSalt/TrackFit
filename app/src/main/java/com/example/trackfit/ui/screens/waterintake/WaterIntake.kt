@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -53,6 +55,9 @@ fun WaterIntakeScreen(navController: NavController) {
     var currentWaterIntake by remember { mutableStateOf(0) }
     var goal by remember { mutableStateOf(0) }
     val context = LocalContext.current
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Scaffold(
         topBar = {
@@ -62,17 +67,24 @@ fun WaterIntakeScreen(navController: NavController) {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            tint = Color.Black
                         )
                     }
-                }
+                },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    titleContentColor = Color.Black,
+                ),
             )
+
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(gradient)
         ) {
             Column(
                 modifier = Modifier
@@ -81,7 +93,7 @@ fun WaterIntakeScreen(navController: NavController) {
                     .verticalScroll(rememberScrollState())
                     .safeDrawingPadding(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
             ) {
 
                 Text(
@@ -89,7 +101,8 @@ fun WaterIntakeScreen(navController: NavController) {
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier
                         .padding(top = 80.dp)
-                        .align(alignment = Alignment.CenterHorizontally),
+                        .align(alignment = Alignment.CenterHorizontally)
+
                 )
 
 

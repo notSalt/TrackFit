@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -79,6 +81,9 @@ fun AddMealScreen(
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Scaffold(
         topBar = {
@@ -91,14 +96,18 @@ fun AddMealScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF5FB1B7),
+                    titleContentColor = Color.Black,
+                )
             )
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(gradient)
         ) {
             Column(
                 modifier = Modifier
@@ -168,8 +177,7 @@ fun AddMealScreen(
                     },
                     modifier = Modifier
                         .padding(bottom = 32.dp, top = 25.dp)
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium),
+                        .fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -188,8 +196,7 @@ fun AddMealScreen(
                     },
                     modifier = Modifier
                         .padding(bottom = 32.dp)
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium),
+                        .fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -252,7 +259,7 @@ fun EditMealField(
     modifier: Modifier,
 ){
 
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,
@@ -273,7 +280,7 @@ fun EditCalorieField(
     modifier: Modifier,
 ){
 
-    TextField(
+    OutlinedTextField(
 
         value = value,
         singleLine = true,

@@ -21,6 +21,13 @@ import com.example.trackfit.ui.screens.welcome.WelcomeScreen
 import com.example.trackfit.utils.Routes
 import WorkoutGuideScreen
 import androidx.compose.ui.platform.LocalContext
+import com.example.trackfit.ui.screens.activitylog.ActivityLogWelcome
+import com.example.trackfit.ui.screens.bmicalculator.BmiWelcome
+import com.example.trackfit.ui.screens.bmicalculator.BmiWelcomePreview
+import com.example.trackfit.ui.screens.nutrigo.NutriGoWelcome
+import com.example.trackfit.ui.screens.stepcounter.StepCounterWelcome
+import com.example.trackfit.ui.screens.waterintake.WaterIntakeWelcome
+import com.example.trackfit.ui.screens.workoutguide.WorkoutWelcome
 
 @Composable
 fun NavHost(
@@ -87,6 +94,24 @@ fun NavHost(
 
         composable(Routes.ADD_ACTIVITY) {
             AddActivityScreen(navController)
+        }
+        composable(Routes.BMI_WELCOME) {
+            BmiWelcome(navController)
+        }
+        composable(Routes.STEP_COUNTER_WELCOME) {
+            StepCounterWelcome(navController)
+        }
+        composable(Routes.WATER_INTAKE_WELCOME) {
+            WaterIntakeWelcome(navController)
+        }
+        composable(Routes.WORKOUT_WELCOME) {
+            WorkoutWelcome(navController)
+        }
+        composable(Routes.ACTIVITY_WELCOME) {
+            ActivityLogWelcome(navController)
+        }
+        composable(Routes.NUTRI_GO_WELCOME) {
+            NutriGoWelcome(navController)
         }
     }
 }

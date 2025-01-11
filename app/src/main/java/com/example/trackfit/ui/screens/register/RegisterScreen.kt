@@ -1,5 +1,6 @@
 package com.example.trackfit.ui.screens.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -59,11 +61,16 @@ fun RegisterScreen(
     var isLoading by remember { mutableStateOf(false) }
     var registerFailed by remember { mutableStateOf(false) }
     var reasonFailed by remember { mutableStateOf("") }
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(gradient)
             .padding(16.dp),
+
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
