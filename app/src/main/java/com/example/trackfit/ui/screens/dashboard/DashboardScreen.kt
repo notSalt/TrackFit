@@ -1,17 +1,23 @@
 package com.example.trackfit.ui.screens.dashboard
 
-import android.R
+//import android.R
 
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,13 +54,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.LoginStateManager
+import com.example.trackfit.R
 
 
 import com.example.trackfit.ui.theme.TrackFitTheme
 import com.example.trackfit.utils.Routes
 
 
-@SuppressLint("SuspiciousIndentation")
 @Composable
 fun DashboardScreen(
     navController: NavHostController,
@@ -94,9 +101,9 @@ fun DashboardScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_menu_camera), // Placeholder icon
+                        painter = painterResource(id = R.drawable.profile_pic), // Placeholder icon
                         contentDescription = "User Profile",
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(80.dp)
                     )
                 }
                 Text(
@@ -109,9 +116,190 @@ fun DashboardScreen(
 
 
 
+           ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp,
+
+                ),
+               colors = CardDefaults.cardColors(
+                   containerColor = Color.Transparent
+               ),
+                modifier = Modifier
+                    .size(width = 400.dp, height = 450.dp)
+            ) {
+               Column (
+                   verticalArrangement = Arrangement.SpaceEvenly,
+                   horizontalAlignment = Alignment.CenterHorizontally,
+                   modifier = Modifier.padding(16.dp)
+               ) {
+                   Row(
+                       horizontalArrangement = Arrangement.SpaceEvenly,
+                       verticalAlignment = Alignment.CenterVertically,
+                       modifier = Modifier.fillMaxWidth()
+                   ) {
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(16.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.bmi_calc),
+                               contentDescription = "bmicalcIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.BMI_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "BMI Calculator",
+                               fontSize = 16.sp
+                           )
+                       }
 
 
-            OptionButton(
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(16.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.workouticonresize),
+                               contentDescription = "workoutIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.WORKOUT_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "Workout Guide",
+                               fontSize = 16.sp
+                           )
+                       }
+
+
+
+                   }
+
+
+                   Row(
+                       horizontalArrangement = Arrangement.SpaceEvenly,
+                       verticalAlignment = Alignment.CenterVertically,
+                       modifier = Modifier.fillMaxWidth()
+                   ) {
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(8.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.watericonresize),
+                               contentDescription = "WaterIntIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .padding(end = 10.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.WATER_INTAKE_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "Daily Water Intake",
+                               fontSize = 16.sp
+                           )
+                       }
+
+
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(16.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.stepicon2),
+                               contentDescription = "stepCounterIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.STEP_COUNTER_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "Step Counter",
+                               fontSize = 16.sp
+                           )
+                       }
+
+
+
+                   }
+                   Row(
+                       horizontalArrangement = Arrangement.SpaceEvenly,
+                       verticalAlignment = Alignment.CenterVertically,
+
+                   ) {
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(30.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.nutrigoicon2),
+                               contentDescription = "NutriGoIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.NUTRI_GO_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "NutriGo",
+                               fontSize = 16.sp
+                           )
+                       }
+
+                       Spacer(modifier = Modifier.width(38.dp))
+
+                       Column(
+                           verticalArrangement = Arrangement.SpaceEvenly,
+                           horizontalAlignment = Alignment.CenterHorizontally,
+                           modifier = Modifier.padding(16.dp)
+                       ) {
+                           Image(
+                               painter = painterResource(R.drawable.activity_log),
+                               contentDescription = "activityLogIcon",
+                               modifier = Modifier
+                                   .padding(8.dp)
+                                   .size(50.dp)
+                                   .clickable {
+                                       navController.navigate(Routes.ACTIVITY_WELCOME)
+                                   }
+                           )
+                           Text(
+                               text = "Activity Log",
+                               fontSize = 16.sp
+                           )
+                       }
+
+
+
+                   }
+
+
+               }
+            }
+
+            /**OptionButton(
                 optionName = "BMI Calculator",
                 onClick = { navController.navigate(Routes.BMI_WELCOME) }
             )
@@ -134,10 +322,11 @@ fun DashboardScreen(
             OptionButton(
                 optionName = "Nutri-Go",
                 onClick = { navController.navigate(Routes.NUTRI_GO_WELCOME) }
-            )
+            )**/
+
 
             // Logout Button
-            Text(
+            /**Text(
                 buildAnnotatedString {
                     withLink(
                         LinkAnnotation.Url(
@@ -152,15 +341,24 @@ fun DashboardScreen(
                         )
                     ) { append("Logout") }
                 }
-            )
+            )**/
+            Spacer(Modifier.height(50.dp))
+            Button(
+                onClick = {
+                    loginStateManager.logOut()
+                    navController.popBackStack(Routes.WELCOME, false)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally),
+                colors = ButtonDefaults.buttonColors(Color.Black)
+
+            ) {
+                Text(text = "Logout")
+            }
 
         }
-        Column (
-            modifier = Modifier.padding(16.dp) ,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
 
-        }
 
 }
 

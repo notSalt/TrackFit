@@ -53,7 +53,7 @@ fun WelcomeScreen(
         ) {
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "TrackFIT",
+                text = "TrackFit",
                 fontSize = 70.sp,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.bodyLarge.copy(
