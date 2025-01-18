@@ -127,9 +127,9 @@ fun StepCounterScreen(navController: NavController) {
                     value = goalInput,
                     onValueChanged = { goalInput = it },
                     modifier = Modifier
-                        .padding(bottom = 32.dp)
+                        .padding(bottom = 32.dp),
                         //.fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium),
+                        //.clip(MaterialTheme.shapes.medium),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
