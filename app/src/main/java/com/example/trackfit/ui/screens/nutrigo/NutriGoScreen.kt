@@ -1,5 +1,6 @@
 package com.example.trackfit.ui.screens.nutrigo
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,7 +47,12 @@ fun NutriGoScreen(
     val gradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
     )
-
+    val context = LocalContext.current
+    if(totalCalories==3000){
+        Toast.makeText(context,"Congrats! You've hit your calorie goal!", Toast.LENGTH_SHORT).show()
+    }else if(totalCalories>=3000){
+        Toast.makeText(context,"You've exceed your daily calorie!", Toast.LENGTH_SHORT).show()
+    }
 
 
     Scaffold(
@@ -85,7 +92,7 @@ fun NutriGoScreen(
             ) {
                 @Suppress("DEPRECATION")
                 LinearProgressIndicator(
-                    progress = totalCalories / 2000f,
+                    progress = totalCalories / 3000f,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(10.dp),
@@ -94,7 +101,7 @@ fun NutriGoScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "$totalCalories kcal / 2000 kcal",
+                    text = "$totalCalories kcal / 3000 kcal",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
