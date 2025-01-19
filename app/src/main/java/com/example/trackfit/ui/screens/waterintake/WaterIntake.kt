@@ -17,8 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,19 +39,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.trackfit.R
-import com.example.trackfit.ui.NavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WaterIntakeScreen(navController: NavController) {
+fun WaterIntakeScreen(
+    navigateBack: () -> Unit
+) {
     var currentWaterIntake by remember { mutableStateOf(0) }
     var goal by remember { mutableStateOf(0) }
     val context = LocalContext.current
@@ -64,9 +61,9 @@ fun WaterIntakeScreen(navController: NavController) {
             TopAppBar(
                 title = { Text(text = "Daily Water Intake") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = Color.Black
                         )
@@ -120,11 +117,17 @@ fun WaterIntakeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(50.dp)
                             .clickable(
-                                enabled = currentWaterIntake<goal
-                            ){
-                                currentWaterIntake+=100
-                                if(currentWaterIntake>=goal){
-                                    Toast.makeText(context,"Congrats! You've hit your water goal for the day!",Toast.LENGTH_SHORT).show()
+                                enabled = currentWaterIntake < goal
+                            ) {
+                                currentWaterIntake += 100
+                                if (currentWaterIntake >= goal) {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Congrats! You've hit your water goal for the day!",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
 
                                 }
 
@@ -144,11 +147,17 @@ fun WaterIntakeScreen(navController: NavController) {
                         modifier = Modifier
                             .size(50.dp)
                             .clickable(
-                                enabled = currentWaterIntake<goal
-                            ){
-                                currentWaterIntake+=200
-                                if(currentWaterIntake>=goal){
-                                    Toast.makeText(context,"Congrats! You've hit your water goal for the day!",Toast.LENGTH_SHORT).show()
+                                enabled = currentWaterIntake < goal
+                            ) {
+                                currentWaterIntake += 200
+                                if (currentWaterIntake >= goal) {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Congrats! You've hit your water goal for the day!",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
 
                                 }
 
@@ -215,11 +224,12 @@ fun WaterIntakeScreen(navController: NavController) {
 }
 
 
-
 @Preview
 @Composable
 fun WaterIntakePreview() {
 
-    WaterIntakeScreen(navController = rememberNavController())
+    WaterIntakeScreen(
+        navigateBack = { }
+    )
 
 }

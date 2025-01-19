@@ -1,5 +1,27 @@
 <resources>
+    <!--Common-->
     <string name="app_name">TrackFit</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="email_error">Please insert a valid email.</string>
+    <string name="cancel">Cancel</string>
+    <string name="try_again">Try again</string>
+    <string name="ok">OK</string>
+
+    <!-- LoginScreen -->
+    <string name="login">Login</string>
+    <string name="login_details">Enter your login details</string>
+    <string name="forgot_password">Forgot password? Click to get recovery email</string>
+    <string name="recovery_email_sent">Check your inbox for the recovery email.</string>
+    <string name="empty_password_error">Password cannot be empty.</string>
+
+    <!-- RegisterScreen -->
+    <string name="create_account">Register an Account</string>
+    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter.</string>
+    <string name="password_match_error">Passwords do not match.</string>
+
     <string name="OnboardingTitle1">Track Your Goal</string>
     <string name="OnboardingDescription1">Don\'t worry if you have trouble determining your goals, We can help you determine your goals and track your goals</string>
     <string name="OnboardingTitle2">Get Burn</string>
@@ -8,8 +30,6 @@
     <string name="OnboardingDescription3">Let\'s start a healthy lifestyle with us, we can determine your diet every day. healthy eating is fun</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
     <string name="bmicalculator">BMI Calculator\n</string>
     <string name="userAge">Age</string>
     <string name="gender">Gender</string>

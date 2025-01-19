@@ -1,61 +1,68 @@
 package com.example.trackfit.ui.screens.activitylog
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import com.example.trackfit.data.activity.ActivityRepository
-import com.example.trackfit.data.activity.Activity
+import androidx.lifecycle.SavedStateHandle
+import com.example.trackfit.common.ext.idFromParameter
+import com.example.trackfit.model.Activity
+import com.example.trackfit.model.service.LogService
+import com.example.trackfit.model.service.StorageService
+import com.example.trackfit.ui.screens.TrackFitViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddActivityViewModel(private val activitiesRepository: ActivityRepository) : ViewModel() {
-    var activityUiState by mutableStateOf(ActivityUiState())
+@HiltViewModel
+class AddActivityViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    logService: LogService,
+    private val storageService: StorageService
+) : TrackFitViewModel(logService) {
+    var uiState = mutableStateOf(AddActivityUiState())
         private set
 
-    fun updateUiState(activityDetails: ActivityDetails) {
-        activityUiState =
-            ActivityUiState(activityDetails = activityDetails, isEntryValid = validateInput(activityDetails))
-    }
-
-    suspend fun saveActivity() {
-        if (validateInput()) {
-            activitiesRepository.insertActivity(activityUiState.activityDetails.toActivity())
+    init {
+        val activityId = savedStateHandle.get<String>(ACTIVITY_ID)
+        if (activityId != null) {
+            launchCatching {
+                val activity =
+                    storageService.getActivity(activityId.idFromParameter()) ?: Activity()
+                uiState.value = activity.toAddActivityUiState()
+            }
         }
     }
 
-    private fun validateInput(uiState: ActivityDetails = activityUiState.activityDetails): Boolean {
-        return with(uiState) {
-            name.isNotBlank() && duration.isNotBlank() && date != 0L
+    fun onNameChange(newValue: String) {
+        uiState.value = uiState.value.copy(name = newValue)
+    }
+
+    fun onDurationChange(newValue: String) {
+        uiState.value = uiState.value.copy(duration = newValue)
+    }
+
+    fun onDateTimeChange(newValue: Long) {
+        uiState.value = uiState.value.copy(datetime = newValue)
+    }
+
+    fun onAddClick(popUpScreen: () -> Unit) {
+        launchCatching {
+            val editedActivity = uiState.value.toActivity()
+            if (editedActivity.id.isBlank()) {
+                storageService.saveActivity(editedActivity)
+            } else {
+                storageService.updateActivity(editedActivity)
+            }
+            popUpScreen()
         }
+    }
+
+    fun onBackClick(popUp: () -> Unit) = popUp()
+
+    private fun Int.toClockPattern(): String {
+        return if (this < 10) "0$this" else "$this"
+    }
+
+    companion object {
+        private const val ACTIVITY_ID = "activityId"
+        private const val UTC = "UTC"
+        private const val DATE_FORMAT = "EEE, d MMM yyyy"
     }
 }
-
-data class ActivityUiState(
-    val activityDetails: ActivityDetails = ActivityDetails(),
-    val isEntryValid: Boolean = false
-)
-
-data class ActivityDetails(
-    val id: Int = 0,
-    val name: String = "",
-    val duration: String = "",
-    val date: Long = 0L,
-)
-
-fun ActivityDetails.toActivity(): Activity = Activity(
-    id = id,
-    name = name,
-    duration = duration.toIntOrNull() ?: 0,
-    date = date,
-)
-
-fun Activity.toActivityUiState(isEntryValid: Boolean = false): ActivityUiState = ActivityUiState(
-    activityDetails = this.toActivityDetails(),
-    isEntryValid = isEntryValid
-)
-
-fun Activity.toActivityDetails(): ActivityDetails = ActivityDetails(
-    id = id,
-    name = name,
-    duration = duration.toString(),
-    date = date
-)

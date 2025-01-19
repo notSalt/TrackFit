@@ -2,30 +2,37 @@ package com.example.trackfit.ui.screens.nutrigo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trackfit.data.meal.Meal
-import com.example.trackfit.data.meal.MealRepository
+import com.example.trackfit.model.service.StorageService
+import com.example.trackfit.utils.Routes
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NutriGoViewModel(private val mealRepository: MealRepository) : ViewModel() {
-    private val _mealLog = MutableStateFlow<List<Meal>>(emptyList())
-    val mealLog: StateFlow<List<Meal>> = _mealLog.asStateFlow()
+@HiltViewModel
+class NutriGoViewModel @Inject constructor(
+    private val storageService: StorageService
+) : ViewModel() {
+    val meals = storageService.meals
 
     private val _totalCalories = MutableStateFlow(0)
     val totalCalories: StateFlow<Int> = _totalCalories.asStateFlow()
 
     init {
-        loadMealLog()
+        refreshTotalCalories()
     }
 
-    private fun loadMealLog() {
+    private fun refreshTotalCalories() {
         viewModelScope.launch {
-            mealRepository.getAllMealsStream().collect { meals ->
-                _mealLog.value = meals
-                _totalCalories.value = meals.sumOf { it.calories }
+            meals.collect { _meals ->
+                _totalCalories.value = _meals.sumOf { it.calories }
             }
         }
     }
+
+    fun onBackClick(popUpScreen: () -> Unit) = popUpScreen()
+
+    fun onAddClick(openScreen: (String) -> Unit) = openScreen(Routes.ADD_MEAL)
 }

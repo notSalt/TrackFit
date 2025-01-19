@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -40,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -53,22 +52,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@ExperimentalMaterial3Api
 fun BmiCalculatorScreen(
-    navController: NavHostController
+    navigateBack: () -> Unit
 ) {
-   // var age by remember { mutableStateOf("") }
+    // var age by remember { mutableStateOf("") }
     var mExpanded by remember { mutableStateOf(false) }
 
     val age = (1..100).toList()
     var mSelectedAge by remember { mutableStateOf("") }
-    var mTextFieldSize by remember { mutableStateOf(Size.Zero)}
+    var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon = if (mExpanded)
         Icons.Filled.KeyboardArrowUp
     else
@@ -77,10 +73,10 @@ fun BmiCalculatorScreen(
     //var gender by remember { mutableStateOf("") }
 
     var mExpandedGender by remember { mutableStateOf(false) }
-    val gender = listOf("Male","Female")
+    val gender = listOf("Male", "Female")
 
     var mSelectedGender by remember { mutableStateOf("") }
-    var mGenderFieldSize by remember { mutableStateOf(Size.Zero)}
+    var mGenderFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon2 = if (mExpandedGender)
         Icons.Filled.KeyboardArrowUp
     else
@@ -100,9 +96,9 @@ fun BmiCalculatorScreen(
             TopAppBar(
                 title = { Text(text = "") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = Color.Black
                         )
@@ -111,11 +107,12 @@ fun BmiCalculatorScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF5FB1B7),
 
-                )
+                    )
 
 
             )
-        }
+        },
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -253,7 +250,9 @@ fun BmiCalculatorScreen(
                 Text(
                     text = "Result : " + bmiResult,
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(top = 80.dp).align(alignment = Alignment.Start)
+                    modifier = Modifier
+                        .padding(top = 80.dp)
+                        .align(alignment = Alignment.Start)
                 )
 
             }
@@ -269,15 +268,15 @@ fun EditAgeField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
-    ){
-        TextField(
+) {
+    TextField(
 
-            value = value,
-            singleLine = true,
-            modifier = modifier,
-            onValueChange = onValueChanged,
-            label = { Text(stringResource(label)) },
-            keyboardOptions = keyboardOptions,
+        value = value,
+        singleLine = true,
+        modifier = modifier,
+        onValueChange = onValueChanged,
+        label = { Text(stringResource(label)) },
+        keyboardOptions = keyboardOptions,
 
         )
 
@@ -290,7 +289,7 @@ fun EditGenderField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
-){
+) {
     TextField(
 
         value = value,
@@ -309,7 +308,7 @@ fun EditHeightField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
-){
+) {
     OutlinedTextField(
 
         value = value,
@@ -329,7 +328,7 @@ fun EditWeightField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
-){
+) {
     OutlinedTextField(
 
         value = value,
@@ -344,23 +343,20 @@ fun EditWeightField(
 
 private fun calcbmi(
     cm: Double,
-    kgs : Double
+    kgs: Double
 
 ): String {
-    var heightInmeters= cm/100
+    var heightInmeters = cm / 100
     var status = ""
-    var result = kgs/(heightInmeters*heightInmeters)
-    var updatedResult = String.format("%.2f",result)
-    if(result<=18.4){
+    var result = kgs / (heightInmeters * heightInmeters)
+    var updatedResult = String.format("%.2f", result)
+    if (result <= 18.4) {
         status = "Underweight"
-    }
-    else if (result>18.4 && result<=24.9){
+    } else if (result > 18.4 && result <= 24.9) {
         status = "Normal"
-    }
-    else if (result>24.9 && result<=39.9){
+    } else if (result > 24.9 && result <= 39.9) {
         status = "Overweight"
-    }
-    else if (result>39.9){
+    } else if (result > 39.9) {
         status = "Obese"
     }
     return "$updatedResult ($status)"
@@ -369,9 +365,10 @@ private fun calcbmi(
 
 
 @Preview
+@ExperimentalMaterial3Api
 @Composable
 fun BmiCalcPreview() {
     BmiCalculatorScreen(
-        navController = rememberNavController()
+        navigateBack = { }
     )
 }

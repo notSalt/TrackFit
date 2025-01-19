@@ -1,69 +1,72 @@
 package com.example.trackfit.ui.screens.nutrigo
 
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.trackfit.R
-import com.example.trackfit.ui.AppViewModelProvider
-import com.example.trackfit.ui.screens.stepcounter.EditGoalField
-import com.example.trackfit.utils.Routes
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.trackfit.model.Meal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NutriGoScreen(
-    navController: NavController,
-    viewModel: NutriGoViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    navigateBack: () -> Unit,
+    openScreen: (String) -> Unit,
+    viewModel: NutriGoViewModel = hiltViewModel()
 ) {
-    val mealLog by viewModel.mealLog.collectAsState()
+    val meals = viewModel.meals.collectAsStateWithLifecycle(emptyList())
     val totalCalories by viewModel.totalCalories.collectAsState()
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
-    )
-    val context = LocalContext.current
-    if(totalCalories==3000){
-        Toast.makeText(context,"Congrats! You've hit your calorie goal!", Toast.LENGTH_SHORT).show()
-    }else if(totalCalories>=3000){
-        Toast.makeText(context,"You've exceed your daily calorie!", Toast.LENGTH_SHORT).show()
-    }
 
+    NutriGoScreenContent(
+        meals = meals.value,
+        totalCalories = totalCalories,
+        onAddClick = { viewModel.onAddClick(openScreen) },
+        onBackClick = { viewModel.onBackClick(navigateBack) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NutriGoScreenContent(
+    meals: List<Meal>,
+    totalCalories: Int = 0,
+    onBackClick: () -> Unit,
+    onAddClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    if (totalCalories == 3000) {
+        Toast.makeText(context, "Congrats! You've hit your calorie goal!", Toast.LENGTH_SHORT)
+            .show()
+    } else if (totalCalories >= 3000) {
+        Toast.makeText(context, "You've exceed your daily calorie!", Toast.LENGTH_SHORT).show()
+    }
+    val gradient = Brush.verticalGradient(colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B)))
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Nutri-Go") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        @Suppress("DEPRECATION")
+                    IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -74,7 +77,8 @@ fun NutriGoScreen(
                 )
 
             )
-        }
+        },
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -121,7 +125,7 @@ fun NutriGoScreen(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                mealLog.forEach { meal ->
+                meals.forEach { meal ->
                     Card(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -134,9 +138,17 @@ fun NutriGoScreen(
                             modifier = Modifier.padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(text = meal.category, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = meal.category,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                             Text(text = meal.name, fontSize = 14.sp, color = Color.Gray)
-                            Text(text = "${meal.calories} kcal", fontSize = 14.sp, color = Color.Gray)
+                            Text(
+                                text = "${meal.calories} kcal",
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
                         }
                     }
                 }
@@ -150,7 +162,7 @@ fun NutriGoScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { navController.navigate(Routes.ADD_MEAL) },
+                    onClick = onAddClick,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -166,9 +178,16 @@ fun NutriGoScreen(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewNutriGoScreen() {
-    NutriGoScreen(navController = rememberNavController())
+    NutriGoScreenContent(
+        meals = listOf(
+            Meal(name = "Pizza", category = "Lunch", calories = 200),
+            Meal(name = "Salad", category = "Breakfast", calories = 150)
+        ),
+        totalCalories = 500,
+        onAddClick = {},
+        onBackClick = {}
+    )
 }
