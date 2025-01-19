@@ -6,17 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -28,7 +26,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,32 +36,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.trackfit.R
-import com.example.trackfit.ui.screens.activitylog.EditDurationField
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StepCounterScreen(navController: NavController) {
+fun StepCounterScreen(
+    navigateBack: () -> Unit
+) {
     var stepsToday by remember { mutableStateOf(0) }
     var goal by remember { mutableStateOf(0) }
     var isRunning by remember { mutableStateOf(false) }
     var goalInput by remember { mutableStateOf(" ") }
-    val coroutineScope = rememberCoroutineScope()
+    rememberCoroutineScope()
     val context = LocalContext.current
     val gradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
     )
-    LaunchedEffect(isRunning,stepsToday) {
-        if(isRunning && goal>0 && stepsToday<=goal){
-            while(isRunning){
+    LaunchedEffect(isRunning, stepsToday) {
+        if (isRunning && goal > 0 && stepsToday <= goal) {
+            while (isRunning) {
                 delay(1000L)
-                stepsToday+=1
+                stepsToday += 1
                 if (stepsToday >= goal) {
                     stepsToday = goal
-                    Toast.makeText(context,"Congrats! You've hit your steps goal!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Congrats! You've hit your steps goal!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     break
                 }
             }
@@ -75,9 +75,9 @@ fun StepCounterScreen(navController: NavController) {
             TopAppBar(
                 title = { Text(text = "Step Counter") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -87,7 +87,8 @@ fun StepCounterScreen(navController: NavController) {
                     titleContentColor = Color.Black,
                 ),
             )
-        }
+        },
+        modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Column(
             verticalArrangement = Arrangement.Center,
@@ -106,7 +107,7 @@ fun StepCounterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             LinearProgressIndicator(
-                progress = if(goal>0) stepsToday.toFloat()/goal.toFloat() else 0f,
+                progress = { if (goal > 0) stepsToday.toFloat() / goal.toFloat() else 0f },
                 color = Color.Red,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
@@ -120,7 +121,7 @@ fun StepCounterScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Column{
+            Column {
 
                 EditGoalField(
                     label = R.string.editGoal,
@@ -128,8 +129,8 @@ fun StepCounterScreen(navController: NavController) {
                     onValueChanged = { goalInput = it },
                     modifier = Modifier
                         .padding(bottom = 32.dp),
-                        //.fillMaxWidth()
-                        //.clip(MaterialTheme.shapes.medium),
+                    //.fillMaxWidth()
+                    //.clip(MaterialTheme.shapes.medium),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -150,10 +151,10 @@ fun StepCounterScreen(navController: NavController) {
                 Row {
                     Button(
                         onClick = {
-                            stepsToday=0
-                            goal=0
-                            isRunning=false
-                            goalInput=""
+                            stepsToday = 0
+                            goal = 0
+                            isRunning = false
+                            goalInput = ""
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -164,8 +165,8 @@ fun StepCounterScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            goal= goalInput.toFloat().toInt()
-                            goalInput=""
+                            goal = goalInput.toFloat().toInt()
+                            goalInput = ""
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -177,7 +178,7 @@ fun StepCounterScreen(navController: NavController) {
 
                 Row {
                     Button(
-                        onClick = { isRunning=true },
+                        onClick = { isRunning = true },
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 16.dp)
@@ -187,7 +188,7 @@ fun StepCounterScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            isRunning=false
+                            isRunning = false
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -209,10 +210,9 @@ fun EditGoalField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier,
-){
+) {
 
     OutlinedTextField(
-
         value = value,
         singleLine = true,
         modifier = modifier,
@@ -226,5 +226,7 @@ fun EditGoalField(
 @Preview(showBackground = true)
 @Composable
 fun PreviewStepCounterScreen() {
-    StepCounterScreen(navController = rememberNavController())
+    StepCounterScreen(
+        navigateBack = { }
+    )
 }

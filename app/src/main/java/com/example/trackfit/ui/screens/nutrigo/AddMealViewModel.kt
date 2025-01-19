@@ -1,61 +1,62 @@
 package com.example.trackfit.ui.screens.nutrigo
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import com.example.trackfit.data.meal.Meal
-import com.example.trackfit.data.meal.MealRepository
+import androidx.lifecycle.SavedStateHandle
+import com.example.trackfit.common.ext.idFromParameter
+import com.example.trackfit.model.Meal
+import com.example.trackfit.model.service.LogService
+import com.example.trackfit.model.service.StorageService
+import com.example.trackfit.ui.screens.TrackFitViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddMealViewModel(private val mealRepository: MealRepository) : ViewModel() {
-    var mealUiState by mutableStateOf(MealUiState())
+@HiltViewModel
+class AddMealViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    logService: LogService,
+    private val storageService: StorageService
+) : TrackFitViewModel(logService) {
+    var uiState = mutableStateOf(AddMealUiState())
         private set
 
-    fun updateUiState(mealDetails: MealDetails) {
-        mealUiState =
-            MealUiState(mealDetails = mealDetails, isEntryValid = validateInput(mealDetails))
-    }
-
-    suspend fun saveMeal() {
-        if (validateInput()) {
-            mealRepository.insertMeal(mealUiState.mealDetails.toMeal())
+    init {
+        val mealId = savedStateHandle.get<String>(MEAL_ID)
+        if (mealId != null) {
+            launchCatching {
+                val meal =
+                    storageService.getMeal(mealId.idFromParameter()) ?: Meal()
+                uiState.value = meal.toAddMealUiState()
+            }
         }
     }
 
-    private fun validateInput(uiState: MealDetails = mealUiState.mealDetails): Boolean {
-        return with(uiState) {
-            name.isNotBlank() && category.isNotBlank() && calories != 0
+    fun onNameChange(newValue: String) {
+        uiState.value = uiState.value.copy(name = newValue)
+    }
+
+    fun onCategoryChange(newValue: String) {
+        uiState.value = uiState.value.copy(category = newValue)
+    }
+
+    fun onCalorieChange(newValue: Int) {
+        uiState.value = uiState.value.copy(calories = newValue)
+    }
+
+    fun onAddClick(popUpScreen: () -> Unit) {
+        launchCatching {
+            val editedMeal = uiState.value.toMeal()
+            if (editedMeal.id.isBlank()) {
+                storageService.saveMeal(editedMeal)
+            } else {
+                storageService.updateMeal(editedMeal)
+            }
+            popUpScreen()
         }
+    }
+
+    fun onBackClick(popUp: () -> Unit) = popUp()
+
+    companion object {
+        private const val MEAL_ID = "mealId"
     }
 }
-
-data class MealDetails(
-    val id: Int = 0,
-    val name: String = "",
-    val category: String = "",
-    val calories: Int = 0,
-)
-
-data class MealUiState(
-    val mealDetails: MealDetails = MealDetails(),
-    val isEntryValid: Boolean = false
-)
-
-fun MealDetails.toMeal(): Meal = Meal(
-    id = id,
-    name = name,
-    category = category,
-    calories = calories,
-)
-
-fun Meal.toMealUiState(isEntryValid: Boolean = false): MealUiState = MealUiState(
-    mealDetails = this.toMealDetails(),
-    isEntryValid = isEntryValid
-)
-
-fun Meal.toMealDetails(): MealDetails = MealDetails(
-    id = id,
-    name = name,
-    category = category,
-    calories = calories
-)

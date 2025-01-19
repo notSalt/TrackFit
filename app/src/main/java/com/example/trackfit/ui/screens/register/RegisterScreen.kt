@@ -1,6 +1,5 @@
 package com.example.trackfit.ui.screens.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Email
-import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,13 +18,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -35,40 +28,52 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.trackfit.R
-import com.example.trackfit.ui.AppViewModelProvider
-import com.example.trackfit.ui.screens.login.LoginViewModel
+import com.example.trackfit.common.composable.EmailField
+import com.example.trackfit.common.composable.PasswordField
+import com.example.trackfit.common.composable.RepeatPasswordField
 import com.example.trackfit.ui.theme.TrackFitTheme
-import com.example.trackfit.utils.Routes
 
 @Composable
 fun RegisterScreen(
-    navController: NavHostController,
-    viewModel: RegisterViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    openAndPopUp: (String, String) -> Unit,
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var registerFailed by remember { mutableStateOf(false) }
-    var reasonFailed by remember { mutableStateOf("") }
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
-    )
+    val uiState by viewModel.uiState
 
+    RegisterScreenContent(
+        uiState = uiState,
+        onFirstNameChange = viewModel::onFirstNameChange,
+        onLastNameChange = viewModel::onLastNameChange,
+        onEmailChange = viewModel::onEmailChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onRepeatPasswordChange = viewModel::onRepeatPasswordChange,
+        onRegisterClick = { viewModel.onRegisterClick(openAndPopUp) },
+        onAlreadyRegistered = { viewModel.onAlreadyRegistered(openAndPopUp) }
+
+    )
+}
+
+@Composable
+fun RegisterScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: RegisterUiState,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onRepeatPasswordChange: (String) -> Unit,
+    onRegisterClick: () -> Unit,
+    onAlreadyRegistered: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradient)
             .padding(16.dp),
 
         verticalArrangement = Arrangement.Center,
@@ -92,52 +97,53 @@ fun RegisterScreen(
         )
 
         OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
+            value = uiState.firstName,
+            onValueChange = onFirstNameChange,
             leadingIcon = { Icon(Icons.Rounded.Person, null) },
             label = { Text(stringResource(R.string.first_name)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
         OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
+            value = uiState.lastName,
+            onValueChange = onLastNameChange,
             leadingIcon = { Icon(Icons.Rounded.Person, null) },
             label = { Text(stringResource(R.string.last_name)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            leadingIcon = { Icon(Icons.Rounded.Email, null) },
-            label = { Text(stringResource(R.string.email)) },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        EmailField(
+            value = uiState.email,
+            onNewValue = onEmailChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            leadingIcon = { Icon(Icons.Rounded.Lock, null) },
-            label = { Text(stringResource(R.string.password)) },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        PasswordField(
+            value = uiState.password,
+            onNewValue = onPasswordChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        RepeatPasswordField(
+            value = uiState.repeatPassword,
+            onNewValue = onRepeatPasswordChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = {
-                isLoading = true
-                viewModel.registerUser(firstName, lastName, email, password) { success, reason ->
-                    isLoading = false
-                    if (success) {
-                        navController.navigate(Routes.LOGIN)
-                    } else {
-                        registerFailed = true
-                        reasonFailed = reason
-                    }
-                } },
+            onClick = { onRegisterClick() },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color.White
@@ -161,15 +167,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        if (registerFailed) {
-            Text(
-                text = reasonFailed,
-                color = Color.Red,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
@@ -182,9 +179,9 @@ fun RegisterScreen(
                             style = SpanStyle(color = Color.Blue),
                             hoveredStyle = SpanStyle(color = Color.Red)
                         ),
-                        linkInteractionListener = { navController.navigate(Routes.LOGIN) }
+                        linkInteractionListener = { onAlreadyRegistered() }
                     )
-               ) { append("Login") }
+                ) { append("Login") }
             }
         )
     }
@@ -193,9 +190,20 @@ fun RegisterScreen(
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
+    val uiState = RegisterUiState(
+        email = "email@test.com"
+    )
+
     TrackFitTheme {
-        RegisterScreen(
-            navController = rememberNavController()
+        RegisterScreenContent(
+            uiState = uiState,
+            onEmailChange = { },
+            onPasswordChange = { },
+            onFirstNameChange = { },
+            onLastNameChange = { },
+            onRepeatPasswordChange = { },
+            onRegisterClick = { },
+            onAlreadyRegistered = { }
         )
     }
 }

@@ -3,7 +3,6 @@ package com.example.trackfit.ui.screens.activitylog
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,70 +10,77 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.trackfit.R
-import com.example.trackfit.ui.AppViewModelProvider
-import com.example.trackfit.utils.Routes
-import kotlinx.coroutines.launch
+import com.example.trackfit.common.composable.BasicField
+import com.example.trackfit.ui.theme.TrackFitTheme
 import java.util.Calendar
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@ExperimentalMaterial3Api
 fun AddActivityScreen(
-    navController: NavController,
-    viewModel: AddActivityViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    navigateBack: () -> Unit,
+    viewModel: AddActivityViewModel = hiltViewModel()
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+    val uiState by viewModel.uiState
+
+    AddActivityContent(
+        uiState = uiState,
+        onNameChange = viewModel::onNameChange,
+        onDurationChange = viewModel::onDurationChange,
+        onDateTimeChange = viewModel::onDateTimeChange,
+        onAddClick = { viewModel.onAddClick(navigateBack) },
+        onBackClick = { viewModel.onBackClick(navigateBack) }
     )
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+@ExperimentalMaterial3Api
+fun AddActivityContent(
+    uiState: AddActivityUiState,
+    onNameChange: (String) -> Unit,
+    onDurationChange: (String) -> Unit,
+    onDateTimeChange: (Long) -> Unit,
+    onAddClick: () -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "") },
+                title = { Text(text = "Add Activity") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        @Suppress("DEPRECATION")
+                    IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -89,168 +95,65 @@ fun AddActivityScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(gradient)
+                .verticalScroll(rememberScrollState())
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
+                    )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            AddActivityBody(
-                navController = navController,
-                activityUiState = viewModel.activityUiState,
-                onActivityValueChange = viewModel::updateUiState,
-                onSaveClick = {
-                    coroutineScope.launch {
-                        viewModel.saveActivity()
-                        navController.navigateUp()
-                    }
-                }
+            Text(
+                text = stringResource(R.string.addActivity),
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(bottom = 16.dp, top = 60.dp)
+                    .align(alignment = Alignment.CenterHorizontally),
             )
-        }
-    }
-}
 
-@Composable
-fun AddActivityBody(
-    navController: NavController,
-    activityUiState: ActivityUiState,
-    onActivityValueChange: (ActivityDetails) -> Unit,
-    onSaveClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .statusBarsPadding()
-            .padding(horizontal = 40.dp)
-            .verticalScroll(rememberScrollState())
-            .safeDrawingPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = stringResource(R.string.addActivity),
-            style = MaterialTheme.typography.displayMedium,
-            modifier = Modifier
-                .padding(bottom = 16.dp, top = 60.dp)
-                .align(alignment = Alignment.CenterHorizontally),
-        )
+            BasicField(R.string.activity, uiState.name, onNameChange)
+            BasicField(R.string.duration, uiState.duration, onDurationChange)
 
-        ActivityInputForm(
-            activityDetails = activityUiState.activityDetails,
-            onValueChange = onActivityValueChange
-        )
+            DateTimePickerButton(uiState.datetime, onDateTimeChange)
 
-        DateTimePickerButton(
-            currentDateTime = activityUiState.activityDetails.date,
-            onDateTimeSelected = { newDateTimeInMillis ->
-                onActivityValueChange(activityUiState.activityDetails.copy(date = newDateTimeInMillis))
-            }
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 150.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = onSaveClick,
-                shape = RoundedCornerShape(100),
-
-                colors = ButtonDefaults.buttonColors(Color.Black),
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .weight(2f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 150.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Save",
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
-            }
-            Button(
-                onClick = { navController.navigate(Routes.ACTIVITY_LOG) },
-                shape = RoundedCornerShape(100),
-                colors = ButtonDefaults.buttonColors(Color.Black),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .weight(2f)
-            ) {
-                Text(
-                    text = "Cancel",
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
+                Button(
+                    onClick = { onAddClick() },
+                    shape = RoundedCornerShape(100),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .weight(2f)
+                ) {
+                    Text(
+                        text = "Save",
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                }
+                Button(
+                    onClick = { onBackClick() },
+                    shape = RoundedCornerShape(100),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .weight(2f)
+                ) {
+                    Text(
+                        text = "Cancel",
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
-}
-
-@Composable
-fun ActivityInputForm(
-    activityDetails: ActivityDetails,
-    modifier: Modifier = Modifier,
-    onValueChange: (ActivityDetails) -> Unit = {}
-) {
-    EditActivityField(
-        label = R.string.activity,
-        value = activityDetails.name,
-        onValueChanged = { onValueChange(activityDetails.copy(name = it)) },
-        modifier = Modifier
-            .padding(bottom = 32.dp)
-            .fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-        )
-    )
-    EditDurationField(
-        label = R.string.duration,
-        value = activityDetails.duration,
-        onValueChanged = { onValueChange(activityDetails.copy(duration = it)) },
-        modifier = Modifier
-            .padding(bottom = 32.dp)
-            .fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
-        )
-    )
-
-}
-
-@Composable
-fun EditActivityField(
-    @StringRes label: Int,
-    keyboardOptions: KeyboardOptions,
-    value: String,
-    onValueChanged: (String) -> Unit,
-    modifier: Modifier,
-) {
-
-    OutlinedTextField(
-        value = value,
-        singleLine = true,
-        modifier = modifier,
-        onValueChange = onValueChanged,
-        label = { Text(stringResource(label)) },
-        keyboardOptions = keyboardOptions,
-    )
-}
-
-@Composable
-fun EditDurationField(
-    @StringRes label: Int,
-    keyboardOptions: KeyboardOptions,
-    value: String,
-    onValueChanged: (String) -> Unit,
-    modifier: Modifier,
-) {
-
-    OutlinedTextField(
-
-        value = value,
-        singleLine = true,
-        modifier = modifier,
-        onValueChange = onValueChanged,
-        label = { Text(stringResource(label)) },
-        keyboardOptions = keyboardOptions,
-    )
 }
 
 @Composable
@@ -264,7 +167,11 @@ fun DateTimePickerButton(
     // Format the current timestamp to display as a formatted string
     val formattedDate = if (currentDateTime != 0L) {
         val date = Calendar.getInstance().apply { timeInMillis = currentDateTime }
-        "${date.get(Calendar.YEAR)}-${date.get(Calendar.MONTH) + 1}-${date.get(Calendar.DAY_OF_MONTH)} ${date.get(Calendar.HOUR_OF_DAY)}:${date.get(Calendar.MINUTE)}"
+        "${date.get(Calendar.YEAR)}-${date.get(Calendar.MONTH) + 1}-${date.get(Calendar.DAY_OF_MONTH)} ${
+            date.get(
+                Calendar.HOUR_OF_DAY
+            )
+        }:${date.get(Calendar.MINUTE)}"
     } else {
         "Select Date and Time"
     }
@@ -307,8 +214,16 @@ fun DateTimePickerButton(
 
 @Preview
 @Composable
+@ExperimentalMaterial3Api
 fun AddActivityPreview() {
-
-    AddActivityScreen(navController = rememberNavController())
-
+    TrackFitTheme {
+        AddActivityContent(
+            uiState = AddActivityUiState(),
+            onNameChange = { },
+            onDurationChange = { },
+            onDateTimeChange = { },
+            onBackClick = { },
+            onAddClick = { }
+        )
+    }
 }

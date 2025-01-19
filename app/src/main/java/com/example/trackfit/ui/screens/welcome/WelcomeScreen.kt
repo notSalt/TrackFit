@@ -1,6 +1,5 @@
 package com.example.trackfit.ui.screens.welcome
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,24 +25,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.trackfit.R
 import com.example.trackfit.ui.theme.TrackFitTheme
-import com.example.trackfit.utils.Routes
 
 @Composable
 fun WelcomeScreen(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    openAndPopUp: (String, String) -> Unit,
+    viewModel: WelcomeViewModel = hiltViewModel(),
 ) {
-    val gradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF5FB1B7), Color(0xFF8E9A9B))
-    )
+    Surface {
+        WelcomeScreenContent(
+            onGetStarted = { viewModel.onGetStarted(openAndPopUp) }
+        )
+    }
+}
+
+@Composable
+fun WelcomeScreenContent(
+    modifier: Modifier = Modifier,
+    onGetStarted: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradient)
     ) {
         Column(
             modifier = Modifier
@@ -59,7 +65,7 @@ fun WelcomeScreen(
                 style = MaterialTheme.typography.bodyLarge.copy(
                     brush = Brush.linearGradient(
                         listOf(
-                            Color(0xFF2F4F4F),Color(0xFF4653B9)
+                            Color(0xFF2F4F4F), Color(0xFF4653B9)
                         )
                     )
                 ),
@@ -75,7 +81,7 @@ fun WelcomeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { navController.navigate(Routes.REGISTER) },
+                onClick = { onGetStarted() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White
@@ -105,8 +111,8 @@ fun WelcomeScreen(
 @Composable
 fun WelcomeScreenPreview() {
     TrackFitTheme {
-        WelcomeScreen(
-            navController = rememberNavController()
+        WelcomeScreenContent(
+            onGetStarted = { },
         )
     }
 }
