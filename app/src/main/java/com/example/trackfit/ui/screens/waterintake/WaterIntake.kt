@@ -115,7 +115,7 @@ fun WaterIntakeScreen(
                         contentDescription = "Increase 100ml",
                         tint = Color.Black,
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(40.dp)
                             .clickable(
                                 enabled = currentWaterIntake < goal
                             ) {
@@ -138,14 +138,14 @@ fun WaterIntakeScreen(
                         text = "100ml",
                         color = Color.Black,
                         fontSize = 30.sp,
-                        modifier = Modifier.padding(start = 0.5.dp, top = 8.dp, end = 20.dp)
+                        modifier = Modifier.padding(start = 0.5.dp, top = 4.dp, end = 20.dp)
                     )
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "Increase 200ml",
                         tint = Color.Black,
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(40.dp)
                             .clickable(
                                 enabled = currentWaterIntake < goal
                             ) {
@@ -168,7 +168,7 @@ fun WaterIntakeScreen(
                         text = "200ml",
                         color = Color.Black,
                         fontSize = 30.sp,
-                        modifier = Modifier.padding(start = 0.5.dp, top = 8.dp)
+                        modifier = Modifier.padding(start = 0.5.dp, top = 4.dp)
 
                     )
                 }
@@ -191,7 +191,7 @@ fun WaterIntakeScreen(
                         colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 16.dp)
-                            .weight(2f)
+                            //.weight(3f)
                     ) {
                         Text(
                             text = "Set Goal",
@@ -208,7 +208,7 @@ fun WaterIntakeScreen(
                         colors = ButtonDefaults.buttonColors(Color.Black),
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 16.dp)
-                            .weight(2f)
+                            //.weight(3f)
                     ) {
                         Text(
                             text = "Reset",
